@@ -1,0 +1,76 @@
+package ws;
+import javax.jws.WebService;
+
+public class Add2Int {
+public int add(int a, int b) {
+    return (a+b);
+}
+}
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Calculator extends JFrame implements FocusListener {
+    JTextField value1 = new JTextField("", 7);
+    JLabel plus = new JLabel("+");
+    JTextField value2 = new JTextField("",6);
+    JLabel equals = new JLabel("=");
+    JTextField sum = new JTextField("", 9);
+
+    public Calculator() {
+        super("The Calculator");
+        setSize(220,82);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        FlowLayout flow = new FlowLayout(FlowLayout.CENTER);
+        setLayout(flow);
+        // add the listners
+        value1.addFocusListener(this);
+        value2.addFocusListener(this);
+        // set up sum field
+        sum.setEditable(true);
+        //add componets
+        add(value1);
+        add(plus);
+        add(value2);
+        add(equals);
+        add(sum);
+        setVisible(true);
+    }
+
+    public void focusGained(FocusEvent event){
+        try { // Call Web Service Operation
+            ws.Add2IntService service = new ws.Add2IntService();
+            ws.Add2Int port = service.getAdd2IntPort();
+            // TODO initialize WS operation arguments here
+            int result = 0;
+            int result2 = 0;
+            result = Integer.parseInt(value1.getText());
+            result2 = Integer.parseInt(value2.getText());
+
+            int total = port.add(result, result2);
+            sum.setText("" +total);
+
+            //float plusTotal = Float.parseFloat(value1.getText()) +
+                Float.parseFloat(value2.getText());
+
+        } catch (Exception ex) {
+            // TODO handle custom exceptions here
+            //value1.setText("0");
+            //value2.setText("0");
+            //sum.setText("0");
+        }
+    }
+
+    public void focusLost(FocusEvent event){
+      focusGained(event);
+    }
+
+    
+    public static void main(String[] args) {
+
+        // TODO code application logic here
+
+        Calculator frame = new Calculator();
+    }
+}
